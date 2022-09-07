@@ -128,6 +128,7 @@ export default {
     },
     async getTrack() {
       const track_list = this.albumInfo.dynamicTags
+      let length = track_list.length
       const res = await getAlbumTracks(this.albumInfo.name)
       const my_list = []
       for (const r of res) {
@@ -140,7 +141,11 @@ export default {
           }
           r.artists = artist_string
           r['lastPlayTime'] = ''
-          if (flag) my_list.push(r)
+          if (flag) {
+            my_list.push(r)
+            length -= 1
+          }
+          if (length === 0) break
         }
       }
       this.tracks = my_list

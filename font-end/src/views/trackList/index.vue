@@ -143,10 +143,12 @@ export default {
           }
           r.artists = artist_string
           r['lastPlayTime'] = ''
+          console.log((this.albumInfo.artist === '群星'), flag, (this.albumInfo.artist === '群星') || flag)
           if ((this.albumInfo.artist === '群星') || flag) {
             my_list.push(r)
             length -= 1
           }
+          console.log(my_list)
           if (length === 0) break
         }
       }

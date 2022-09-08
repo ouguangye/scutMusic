@@ -138,10 +138,14 @@ export default {
         if (valid) {
           if (this.value === '2') {
             if (this.loginForm.username === 'admin' && this.loginForm.password === 'admin') {
-              window.location.href = '/admin/index/album/'
+              window.open('/admin/index/album/', '_blank')
+              this.loginForm.username = ''
+              this.loginForm.password = ''
+              this.$message('登录成功，现在打开管理页面')
             } else {
               this.$message.error('账户或者密码错误')
             }
+            return
           }
           this.loading = true
           const res = await userLogin({ 'username': this.loginForm.username,

@@ -137,11 +137,13 @@ export default {
           let flag = false // 判断是否包含专辑的作者
           for (const a of r.artists) {
             artist_string += (a.name + ' ')
-            if (a.name === this.albumInfo.artist) flag = true
+            if (this.albumInfo.artist !== '群星') {
+              if (a.name === this.albumInfo.artist) flag = true
+            }
           }
           r.artists = artist_string
           r['lastPlayTime'] = ''
-          if (flag) {
+          if ((this.albumInfo.artist === '群星') || flag) {
             my_list.push(r)
             length -= 1
           }

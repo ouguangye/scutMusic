@@ -26,6 +26,8 @@ export default {
       if (res.data.msg === 'success') {
         this.onClear()
         this.$message('上传成功，请等待管理员审核')
+      } else {
+        this.$message.error(res.data.msg)
       }
     },
     onClear() {

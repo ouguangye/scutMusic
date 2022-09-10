@@ -4,7 +4,6 @@
       <div class="img-wrap">
         <el-image
           :src="albumInfo.imageUrl"
-          :lazy="true"
           fit="fit"
           class="albumTrack"
         >
@@ -69,7 +68,7 @@
     </div>
     <div class="player">
       <!-- autoplay 自动播放 -->
-      <audio :src="musicUrl" controls autoplay @ended="overAudio"/>
+      <audio :src="musicUrl" controls autoplay @ended="overAudio" />
     </div>
   </div>
 </template>
@@ -129,10 +128,13 @@ export default {
     async getTrack() {
       const track_list = this.albumInfo.dynamicTags
       let length = track_list.length
+      // console.log(track_list)
       const res = await getAlbumTracks(this.albumInfo.name)
+      // console.log(res)
       const my_list = []
       for (const r of res) {
-        if (track_list.indexOf(r.name) !== (-1)) {
+        const index = track_list.indexOf(r.name)
+        if (index !== (-1)) {
           let artist_string = ''
           let flag = false // 判断是否包含专辑的作者
           for (const a of r.artists) {
@@ -143,12 +145,15 @@ export default {
           }
           r.artists = artist_string
           r['lastPlayTime'] = ''
-          console.log((this.albumInfo.artist === '群星'), flag, (this.albumInfo.artist === '群星') || flag)
+          // console.log((this.albumInfo.artist === '群星'), flag, (this.albumInfo.artist === '群星') || flag)
           if ((this.albumInfo.artist === '群星') || flag) {
             my_list.push(r)
             length -= 1
+            // console.log('before', index, track_list)
+            track_list.splice(index, 1)
+            // console.log(track_list)
           }
-          console.log(my_list)
+          // console.log(my_list)
           if (length === 0) break
         }
       }

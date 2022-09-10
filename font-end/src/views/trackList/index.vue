@@ -54,7 +54,7 @@
             class="el-table__row"
           >
             <td>{{ index+1 }}</td>
-            <td><el-button type="text" @click="playMusic(item.id, true)">{{ item.name }}</el-button></td>
+            <td><el-button type="text" @click="playMusic(index,true)">{{ item.name }}</el-button></td>
             <td>{{ item.artists }}</td>
             <td>{{ item.duration }}</td>
             <td>{{ item.lastPlayTime }}</td>
@@ -79,7 +79,7 @@ import {
   getAlbumTracks,
   getAnAlbumInfo,
   getMusicUrl,
-  getTrackLastPlayTime,
+  getTrackLastPlayTime, getTracksInfo, isAlbumGetInfo,
   updateTrackDuration, updateTrackLastPlayTime
 } from '@/backendApi/api'
 export default {
@@ -111,10 +111,14 @@ export default {
   },
   async mounted() {
     await this.attainAlbumInfo()
-    await this.getTrack()
-    await this.updateTrackDuration()
-    await this.getTrackLastPlayTimeFunction()
-    await this.getMusicUrl()
+    const res = await isAlbumGetInfo({ 'albumId': this.$route.params.id })
+    if (!res.data.result) {
+      await this.getTrackFromNetwork()
+      await this.updateTrackDuration()
+      await this.getTrackLastPlayTimeFunction()
+    } else {
+      await this.getTracks()
+    }
   },
   methods: {
     openDetailDialog() {
@@ -125,10 +129,9 @@ export default {
       const res = await getAnAlbumInfo({ 'albumId': this.$route.params.id })
       this.albumInfo = res.data.result
     },
-    async getTrack() {
+    async getTrackFromNetwork() {
       const track_list = this.albumInfo.dynamicTags
       let length = track_list.length
-      // console.log(track_list)
       const res = await getAlbumTracks(this.albumInfo.name)
       // console.log(res)
       const my_list = []
@@ -145,24 +148,26 @@ export default {
           }
           r.artists = artist_string
           r['lastPlayTime'] = ''
-          // console.log((this.albumInfo.artist === '群星'), flag, (this.albumInfo.artist === '群星') || flag)
           if ((this.albumInfo.artist === '群星') || flag) {
             my_list.push(r)
             length -= 1
-            // console.log('before', index, track_list)
             track_list.splice(index, 1)
-            // console.log(track_list)
           }
-          // console.log(my_list)
           if (length === 0) break
         }
       }
       this.tracks = my_list
     },
     async updateTrackDuration() {
+      const my_list = []
       for (const t of this.tracks) {
-        await updateTrackDuration({ 'trackName': t.name, 'duration': t.duration })
+        const res = await getMusicUrl(t.id)
+        const url = res.data.data[0].url
+        my_list.push(url)
+        // await updateTrackMusicUrl({ 'trackName': t.name, 'musicUrl': url })
+        await updateTrackDuration({ 'trackName': t.name, 'duration': t.duration, 'artist': t.artists, 'musicUrl': url })
       }
+      this.musicList = my_list
     },
     async getTrackLastPlayTimeFunction() {
       for (const t of this.tracks) {
@@ -170,13 +175,20 @@ export default {
         t.lastPlayTime = res.data.result
       }
     },
-    async getMusicUrl() {
+    async getTracks() {
+      const res = await getTracksInfo({ 'albumId': this.$route.params.id })
       const my_list = []
-      for (const t of this.tracks) {
-        const res = await getMusicUrl(t.id)
-        my_list.push(res.data.data[0].url)
+      if (res.data.msg === 'success') {
+        this.tracks = res.data.result
+        // console.dir(this.tracks)
+        for (const t of this.tracks) {
+          // console.log(t)
+          my_list.push(t.musicUrl)
+        }
+        this.musicList = my_list
+      } else {
+        this.$message.error(res.data.msg)
       }
-      this.musicList = my_list
     },
     async playMusic(id, outsideClick) {
       if (outsideClick) this.isAllPlay = false
@@ -193,8 +205,9 @@ export default {
       // console.log('over!!!')
       if (!this.isAllPlay) return
       this.musicIndex += 1
+      // 这里设定为循环播放模式
       if (this.musicIndex >= this.musicList.length) {
-        this.isAllPlay = false
+        // this.isAllPlay = false
         this.musicIndex = 0
         return
       }

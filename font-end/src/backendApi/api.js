@@ -64,6 +64,10 @@ export function updateAlbum(param) {
   return __requestApi(0, 'updateAlbum/', param)
 }
 
+export function isAlbumGetInfo(param) {
+  return __requestApi(1, 'isAlbumGetInfo/', param)
+}
+
 export function sendCommentRequest(param) {
   return __requestApi(1, 'sendComment/', param)
 }
@@ -90,6 +94,14 @@ export function updateTrackLastPlayTime(param) {
 
 export function getTrackLastPlayTime(param) {
   return __requestApi(1, 'getTrackLastPlayTime/', param)
+}
+
+export function updateTrackMusicUrl(param) {
+  return __requestApi(1, 'updateTrackMusicUrl/', param)
+}
+
+export function getTracksInfo(param) {
+  return __requestApi(1, 'getTracks/', param)
 }
 
 export function getAlbumTracks(keyword) {

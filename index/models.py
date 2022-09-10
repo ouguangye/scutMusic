@@ -30,9 +30,13 @@ class Album(models.Model):
     latestPlayTime = models.DateTimeField(verbose_name='最近播放时间', default=timezone.now, null=True)
     intro = models.TextField(default='', verbose_name='简介')
     uploader = models.ForeignKey(to=UserInfo, verbose_name='上传专辑的作者', on_delete=models.DO_NOTHING, null=True)
+
     # 该属性判断是否审核通过, 0表示审核未通过, 1表示正在审核, 2表示审核已通过
     uploadState = models.CharField(default='1', max_length=20, choices=(('0', '审核未通过'), ('1', '待审核'), ('2', '审核已通过')),
                                    verbose_name='上传状态')
+
+    # 该属性是判断是否该专辑已经获取到了相关的音乐信息，以免重复获取，可以说是一种优化
+    isGetInfoForTracks = models.BooleanField(default=False)
 
     def __str__(self):
         return self.albumName
@@ -44,6 +48,8 @@ class Track(models.Model):
     album = models.ForeignKey(to=Album, null=True, verbose_name='专辑', on_delete=models.CASCADE)
     duration = models.CharField(max_length=6, verbose_name='歌曲长度', null=True)
     latestPlayTime = models.DateTimeField(verbose_name='最近播放时间', default=timezone.now, null=True)
+    musicUrl = models.CharField(max_length=100, verbose_name='歌曲链接', null=True)
+    artist = models.CharField(max_length=50, null=True, verbose_name='歌手')
 
     def __str__(self):
         return self.trackName

@@ -253,6 +253,27 @@ def get_an_album(request):
     return JsonResponse(response)
 
 
+@require_http_methods(["GET"])
+def is_album_get_info(request):
+    response = {}
+    try:
+        album_id = request.GET.get('albumId')
+        album = Album.objects.get(albumId=album_id)
+        if album.isGetInfoForTracks:
+            response['result'] = True
+        else:
+            response['result'] = False
+            album.isGetInfoForTracks = True
+            album.save()
+        response['msg'] = 'success'
+        response['err_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+    return JsonResponse(response)
+
+
 '''
     歌曲的更新和获取
 '''
@@ -264,8 +285,32 @@ def update_track_duration(request):
     try:
         track_name = request.GET.get('trackName')
         duration = request.GET.get('duration')
+        artist = request.GET.get('artist')
+        music_url = request.GET.get('musicUrl')
         track = Track.objects.get(trackName=track_name)
         track.duration = duration
+        track.artist = artist
+        track.musicUrl = music_url
+        track.save()
+        response['msg'] = 'success'
+        response['err_num'] = 0
+
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+
+    return JsonResponse(response)
+
+
+@require_http_methods(["GET"])
+def update_track_music_url(request):
+    response = {}
+    try:
+        track_name = request.GET.get('trackName')
+        music_url = request.GET.get('musicUrl')
+        track = Track.objects.get(trackName=track_name)
+        track.musicUrl = music_url
         track.save()
         response['msg'] = 'success'
         response['err_num'] = 0
@@ -306,6 +351,32 @@ def update_track_last_play_time(request):
         track = Track.objects.get(trackName=track_name)
         track.latestPlayTime = timezone.now()
         track.save()
+        response['msg'] = 'success'
+        response['err_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+
+    return JsonResponse(response)
+
+
+@require_http_methods(["GET"])
+def get_tracks(request):
+    response = {}
+    try:
+        album_id = request.GET.get('albumId')
+        album = Album.objects.get(albumId=album_id)
+        my_list = []
+        for t in album.track_set.all():
+            if t.latestPlayTime:
+                time = t.latestPlayTime.strftime("%Y-%m-%d %H:%M")
+            else:
+                time = timezone.now().strftime("%Y-%m-%d %H:%M")
+            my_list.append({'name': t.trackName, 'artists': t.artist,
+                            'duration': t.duration, 'lastPlayTime': time,
+                            'musicUrl': t.musicUrl})
+        response['result'] = my_list
         response['msg'] = 'success'
         response['err_num'] = 0
     except Exception as e:

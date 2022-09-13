@@ -13,6 +13,7 @@ urlpatterns = [
     path('updateAlbum/', views.update_album),
     path('getAnAlbum/', views.get_an_album),
     path('isAlbumGetInfo/', views.is_album_get_info),
+    path('setAlbumGetState/', views.set_album_get_state),
     path('addCollection/', views.add_collection),
     path('delCollection/', views.delete_collection),
     path('getCollection/', views.get_collection),

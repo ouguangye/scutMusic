@@ -259,14 +259,24 @@ def is_album_get_info(request):
     try:
         album_id = request.GET.get('albumId')
         album = Album.objects.get(albumId=album_id)
-        if album.isGetInfoForTracks:
-            response['result'] = True
-        else:
-            response['result'] = False
-            album.isGetInfoForTracks = True
-            album.save()
+        response['result'] = album.isGetInfoForTracks
         response['msg'] = 'success'
         response['err_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+    return JsonResponse(response)
+
+
+@require_http_methods(["GET"])
+def set_album_get_state(request):
+    response = {}
+    try:
+        album_id = request.GET.get('albumId')
+        album = Album.objects.get(albumId=album_id)
+        album.isGetInfoForTracks = True
+        album.save()
     except Exception as e:
         response['msg'] = str(e)
         response['err_num'] = 1

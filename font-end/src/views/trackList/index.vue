@@ -79,7 +79,7 @@ import {
   getAlbumTracks,
   getAnAlbumInfo,
   getMusicUrl,
-  getTrackLastPlayTime, getTracksInfo, isAlbumGetInfo,
+  getTrackLastPlayTime, getTracksInfo, isAlbumGetInfo, setAlbumGetState,
   updateTrackDuration, updateTrackLastPlayTime
 } from '@/backendApi/api'
 export default {
@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     openDetailDialog() {
-      this.$alert(this.albumInfo.desc, '专辑简介详情')
+      this.$alert(this.albumInfo.desc, '专辑简介详情', { customClass: 'alertBox' })
     },
     async attainAlbumInfo() {
       // console.log('id: ' + this.$route.params.id)
@@ -133,7 +133,9 @@ export default {
       const track_list = this.albumInfo.dynamicTags
       let length = track_list.length
       const res = await getAlbumTracks(this.albumInfo.name)
-      // console.log(res)
+      if (res.length === 0) {
+        return
+      }
       const my_list = []
       for (const r of res) {
         const index = track_list.indexOf(r.name)
@@ -157,6 +159,9 @@ export default {
         }
       }
       this.tracks = my_list
+      if (this.tracks.length !== 0) {
+        await setAlbumGetState({ 'albumId': this.$route.params.id })
+      }
     },
     async updateTrackDuration() {
       const my_list = []
@@ -217,6 +222,15 @@ export default {
   }
 }
 </script>
+
+<style>
+/*自定义弹窗的样式*/
+.alertBox {
+  width: 800px;
+  max-height: 600px;
+  overflow: auto;
+}
+</style>
 
 <style scoped>
 

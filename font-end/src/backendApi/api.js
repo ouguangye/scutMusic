@@ -68,6 +68,10 @@ export function isAlbumGetInfo(param) {
   return __requestApi(1, 'isAlbumGetInfo/', param)
 }
 
+export function setAlbumGetState(param) {
+  return __requestApi(1, 'setAlbumGetState/', param)
+}
+
 export function sendCommentRequest(param) {
   return __requestApi(1, 'sendComment/', param)
 }

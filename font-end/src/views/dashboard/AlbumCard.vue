@@ -3,12 +3,11 @@
     <el-image
       style="width: 100%"
       :src="info.albumImage"
-      :lazy="true"
       fit="fit"
       @click.native.prevent="onJump"
     >
       <div slot="error" class="image-slot">
-        <i class="el-icon-picture-outline"></i>
+        <i class="el-icon-picture-outline" style="font-size: 270px"/>
       </div>
     </el-image>
     <div style="padding: 14px;">

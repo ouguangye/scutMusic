@@ -333,11 +333,10 @@ export default {
 }
 
 .playlist-container .top-wrap .info-wrap .desc-wrap .desc {
-  display: block; /* 需要 */
-  word-break: break-all; /* 需要 */
-  -webkit-line-clamp: 5 /*你需要的行数*/;
-  text-overflow: ellipsis;  /* 过长部分展示省略号 */
-  overflow: hidden;  /* 隐藏过长部分 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
 }
 
 .playlist-container .top-wrap .info-wrap .desc-wrap:last-of-type {

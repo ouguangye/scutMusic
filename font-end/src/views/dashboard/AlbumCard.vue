@@ -1,25 +1,47 @@
 <template>
-  <el-card :body-style="{ padding: '0px' }" class="card">
-    <el-image
-      style="width: 100%"
-      :src="info.albumImage"
-      fit="fit"
-      @click.native.prevent="onJump"
-    >
-      <div slot="error" class="image-slot">
-        <i class="el-icon-picture-outline" style="font-size: 270px"/>
+  <el-skeleton style="width: 100%" :loading="loading" animated>
+    <template slot="template">
+      <el-skeleton-item
+        variant="image"
+        style="width: 270px; height: 270px;"
+      />
+      <div style="padding: 14px 0;">
+        <el-skeleton-item variant="h3" style="width: 50%;" />
+        <div
+          style="display: flex; align-items: center; margin-top: 16px; height: 16px;margin-bottom: 16px;"
+        >
+          <el-skeleton-item variant="text" style="margin-right: 43px;width: 40%" />
+          <el-skeleton-item variant="text" style="width: 30%;" />
+        </div>
       </div>
-    </el-image>
-    <div style="padding: 14px;">
-      <el-link @click.native.prevent="onJump">{{ info.albumName }}</el-link>
-      <div class="bottom clearfix">
-        <time class="time">artist: {{ info.artist }}</time>
-        <el-button type="text" class="button" @click.native.prevent="operateCollection">
-          {{ info.isCollected?'取消收藏':'收藏' }}
-        </el-button>
-      </div>
-    </div>
-  </el-card>
+    </template>
+    <template>
+      <el-card :body-style="{ padding: '0px' }" class="card">
+        <el-image
+          v-show="isShow"
+          style="width: 100%"
+          :src="info.albumImage"
+          fit="fit"
+          @load="imageLoad"
+          @click.native.prevent="onJump"
+        />
+        <img
+          v-show="!isShow"
+          style="width: 100%;height: 100%"
+          src="@/assets/loading.png"
+        />
+        <div style="padding: 14px;">
+          <el-link @click.native.prevent="onJump">{{ info.albumName }}</el-link>
+          <div class="bottom clearfix">
+            <time class="time">artist: {{ info.artist }}</time>
+            <el-button type="text" class="button" @click.native.prevent="operateCollection">
+              {{ info.isCollected?'取消收藏':'收藏' }}
+            </el-button>
+          </div>
+        </div>
+      </el-card>
+    </template>
+  </el-skeleton>
 </template>
 
 <script>
@@ -30,8 +52,13 @@ export default {
   props: ['info'],
   data() {
     return {
-      // isCollected: false
+      loading: false, // 骨架框德加载
+      isShow: false // 空白照片的加载
     }
+  },
+  mounted() {
+    // this.loading = true
+    // setTimeout(() => (this.loading = false), 2000)
   },
   methods: {
     async operateCollection() {
@@ -52,6 +79,10 @@ export default {
     },
     onJump() {
       window.location = ('#/album/' + this.info.albumId)
+    },
+    imageLoad() {
+      console.log('!!!!!!!!')
+      this.isShow = true
     }
   }
 }

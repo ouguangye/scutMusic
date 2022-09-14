@@ -81,7 +81,7 @@ export default {
       window.location = ('#/album/' + this.info.albumId)
     },
     imageLoad() {
-      console.log('!!!!!!!!')
+      // console.log('!!!!!!!!')
       this.isShow = true
     }
   }

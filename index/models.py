@@ -47,7 +47,7 @@ class Track(models.Model):
     album = models.ForeignKey(to=Album, null=True, verbose_name='专辑', on_delete=models.CASCADE)
     duration = models.CharField(max_length=6, verbose_name='歌曲长度', null=True)
     latestPlayTime = models.DateTimeField(verbose_name='最近播放时间', default=timezone.now, null=True)
-    musicUrl = models.CharField(max_length=100, verbose_name='歌曲链接', null=True)
+    musicUrl = models.CharField(max_length=200, verbose_name='歌曲链接', null=True)
     artist = models.CharField(max_length=50, null=True, verbose_name='歌手')
 
     def __str__(self):

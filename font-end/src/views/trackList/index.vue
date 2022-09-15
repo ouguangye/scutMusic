@@ -113,9 +113,7 @@ export default {
     await this.attainAlbumInfo()
     const res = await isAlbumGetInfo({ 'albumId': this.$route.params.id })
     if (!res.data.result) {
-      await this.getTrackFromNetwork()
-      await this.updateTrackDuration()
-      await this.getTrackLastPlayTimeFunction()
+      await this.getNetWork()
     } else {
       await this.getTracks()
     }
@@ -123,6 +121,11 @@ export default {
   methods: {
     openDetailDialog() {
       this.$alert(this.albumInfo.desc, '专辑简介详情', { customClass: 'alertBox' })
+    },
+    async getNetWork() {
+      await this.getTrackFromNetwork()
+      await this.updateTrackDuration()
+      await this.getTrackLastPlayTimeFunction()
     },
     async attainAlbumInfo() {
       // console.log('id: ' + this.$route.params.id)
@@ -214,6 +217,7 @@ export default {
       if (this.musicIndex >= this.musicList.length) {
         // this.isAllPlay = false
         this.musicIndex = 0
+        this.playMusic(this.musicIndex, false)
         return
       }
       // this.musicUrl = this.musicList[this.musicIndex]

@@ -105,12 +105,21 @@ def update_password(request):
 def upload_album(request):
     response = {}
     try:
-        username = request.GET.get('username')
-        album_name = request.GET.get('name')
-        album_image = request.GET.get('imageUrl')
-        artist = request.GET.get('artist')
-        desc = request.GET.get('desc')
-        tracks = request.GET.getlist('dynamicTags[]')
+        username = request.POST.get('username')
+        album_name = request.POST.get('name')
+        album_image = request.POST.get('imageUrl')
+        artist = request.POST.get('artist')
+        desc = request.POST.get('desc')
+        num = int(request.POST.get('num'))
+
+        tracks = []
+        for i in range(num):
+            t = request.POST.get('dynamicTags[%s]' % i)
+            if not t:
+                break
+            tracks.append(t)
+        print(tracks)
+
         user_object = UserInfo.objects.get(username=username)
         artist_object = Artist.objects.get_or_create(artistName=artist)[0]
         album_object = Album.objects.create(albumName=album_name, albumImage=album_image, artist=artist_object,
@@ -118,6 +127,51 @@ def upload_album(request):
 
         for t in tracks:
             Track.objects.create(trackName=t, album=album_object)
+
+        response['msg'] = 'success'
+        response['err_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 0
+
+    return JsonResponse(response)
+
+
+@require_http_methods(["POST"])
+def update_album(request):
+    response = {}
+    try:
+        album_id = request.POST.get('id')
+        album_name = request.POST.get('name')
+        album_image = request.POST.get('imageUrl')
+        artist = request.POST.get('artist')
+        desc = request.POST.get('desc')
+        num = int(request.POST.get('num'))
+
+        tracks = []
+        for i in range(num):
+            t = request.POST.get('dynamicTags[%s]' % i)
+            if not t:
+                break
+            tracks.append(t)
+        print(tracks)
+
+        artist_object = Artist.objects.get_or_create(artistName=artist)[0]
+        album_objects = Album.objects.filter(albumId=album_id)
+        album_objects.update(albumName=album_name, albumImage=album_image, artist=artist_object,
+                             intro=desc, uploadState='1')
+
+        old_tracks = [x['trackName'] for x in album_objects[0].track_set.all().values('trackName')]
+
+        # 比较旧的track列表 和 新track列表， 如果新track不包含，那么则删除。 如果新track列表有新的歌曲，那么旧添加
+        for t in old_tracks:
+            if t in tracks:
+                tracks.remove(t)
+                continue
+            else:
+                Track.objects.get(trackName=t).delete()
+        for t in tracks:
+            Track.objects.create(trackName=t, album=album_objects[0])
 
         response['msg'] = 'success'
         response['err_num'] = 0
@@ -187,43 +241,6 @@ def get_upload_album(request):
         response['msg'] = 'success'
         response['err_num'] = 0
         response['result'] = lists
-    except Exception as e:
-        response['msg'] = str(e)
-        response['err_num'] = 1
-        print(str(e))
-
-    return JsonResponse(response)
-
-
-@require_http_methods(["POST"])
-def update_album(request):
-    response = {}
-    try:
-        album_id = request.GET.get('id')
-        album_name = request.GET.get('name')
-        album_image = request.GET.get('imageUrl')
-        artist = request.GET.get('artist')
-        desc = request.GET.get('desc')
-        tracks = request.GET.getlist('dynamicTags[]')
-        artist_object = Artist.objects.get_or_create(artistName=artist)[0]
-        album_objects = Album.objects.filter(albumId=album_id)
-        album_objects.update(albumName=album_name, albumImage=album_image, artist=artist_object,
-                             intro=desc, uploadState='1')
-
-        old_tracks = [x['trackName'] for x in album_objects[0].track_set.all().values('trackName')]
-
-        # 比较旧的track列表 和 新track列表， 如果新track不包含，那么则删除。 如果新track列表有新的歌曲，那么旧添加
-        for t in old_tracks:
-            if t in tracks:
-                tracks.remove(t)
-                continue
-            else:
-                Track.objects.get(trackName=t).delete()
-        for t in tracks:
-            Track.objects.create(trackName=t, album=album_objects[0])
-
-        response['msg'] = 'success'
-        response['err_num'] = 0
     except Exception as e:
         response['msg'] = str(e)
         response['err_num'] = 1

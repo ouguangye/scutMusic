@@ -48,7 +48,7 @@ export default {
       }
     },
     async onSubmit() {
-      const res = await updateAlbum(this.form)
+      const res = await updateAlbum({ ...this.form, 'num': this.form.dynamicTags.length })
       console.log(res.data)
       if (res.data.msg === 'success') {
         this.$message('修改成功，待管理员审核')

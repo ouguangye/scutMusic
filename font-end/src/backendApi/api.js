@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 
 function __requestApi(isGet, url, param) {
   return axios.request({
@@ -6,6 +7,20 @@ function __requestApi(isGet, url, param) {
     method: isGet ? 'get' : 'post',
     params: param
   }).then(res => {
+    return res
+  }).catch(e => {
+    console.log(e)
+  })
+}
+
+function __postFormApi(url, param) {
+  const options = {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    data: qs.stringify(param),
+    url: 'api/' + url
+  }
+  return axios(options).then(res => {
     return res
   }).catch(e => {
     console.log(e)
@@ -32,8 +47,21 @@ export function updateUserPassword(param) {
   return __requestApi(0, 'updatePassword/', param)
 }
 
+// TODO  由于参数太长，这里的接口需要修改为form上传形式
+// export function uploadAlbum(album) {
+//   return __requestApi(0, 'uploadAlbum/', album)
+// }
+
 export function uploadAlbum(album) {
-  return __requestApi(0, 'uploadAlbum/', album)
+  return __postFormApi('uploadAlbum/', album)
+}
+
+// export function updateAlbum(param) {
+//   return __requestApi(0, 'updateAlbum/', param)
+// }
+
+export function updateAlbum(param) {
+  return __postFormApi('updateAlbum/', param)
 }
 
 export function getAllAlbum(param) {
@@ -58,10 +86,6 @@ export function getUploadAlbum(param) {
 
 export function getAnAlbumInfo(param) {
   return __requestApi(1, 'getAnAlbum/', param)
-}
-
-export function updateAlbum(param) {
-  return __requestApi(0, 'updateAlbum/', param)
 }
 
 export function isAlbumGetInfo(param) {
@@ -107,6 +131,8 @@ export function updateTrackMusicUrl(param) {
 export function getTracksInfo(param) {
   return __requestApi(1, 'getTracks/', param)
 }
+
+// TODO 这里的接口因为访问次数过多，然后经常获取失败，这里建议多尝试几种接口形式
 
 export function getAlbumTracks(keyword) {
   return axios({

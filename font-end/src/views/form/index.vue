@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const form = { ...this.form, 'username': this.$store.getters.name }
+      const form = { ...this.form, 'username': this.$store.getters.name, 'num': this.form.dynamicTags.length }
       const res = await uploadAlbum(form)
       if (res.data.msg === 'success') {
         this.onClear()

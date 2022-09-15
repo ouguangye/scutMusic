@@ -171,6 +171,7 @@ export default {
       for (const t of this.tracks) {
         const res = await getMusicUrl(t.id)
         const url = res.data.data[0].url
+        // const url = 'https://music.163.com/song/media/outer/url?id=' + t.id + '.mp3'
         my_list.push(url)
         // await updateTrackMusicUrl({ 'trackName': t.name, 'musicUrl': url })
         await updateTrackDuration({ 'trackName': t.name, 'duration': t.duration, 'artist': t.artists, 'musicUrl': url })

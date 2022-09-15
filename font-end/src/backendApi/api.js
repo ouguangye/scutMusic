@@ -166,7 +166,7 @@ export function getAlbumTracks(keyword) {
 
 export function getMusicUrl(id) {
   return axios({
-    url: 'https://autumnfish.cn/song/url',
+    url: 'https://autumnfish.cn/song/url/v1',
     method: 'get',
     params: {
       id // id:id

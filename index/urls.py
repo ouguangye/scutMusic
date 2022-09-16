@@ -22,7 +22,7 @@ urlpatterns = [
     path('updateCommentLike/', views.update_comment_like),
     path('replyCommit/', views.reply_comment),
     path('getTracks/', views.get_tracks),
-    path('updateTrackDuration/', views.update_track_duration),
+    path('updateTrack/', views.update_track),
     path('getTrackLastPlayTime/', views.get_track_last_play_time),
     path('updateTrackLastPlayTime/', views.update_track_last_play_time),
     path('updateTrackMusicUrl/', views.update_track_music_url),

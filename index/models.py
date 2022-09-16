@@ -35,7 +35,7 @@ class Album(models.Model):
                                    verbose_name='上传状态')
 
     # 该属性是判断是否该专辑已经获取到了相关的音乐信息，以免重复获取，可以说是一种优化
-    isGetInfoForTracks = models.BooleanField(default=False)
+    isGetInfoForTracks = models.BooleanField(default=False, verbose_name='是否已经请求过外来接口获得歌曲信息（默认：否）')
 
     def __str__(self):
         return self.albumName
@@ -47,7 +47,11 @@ class Track(models.Model):
     album = models.ForeignKey(to=Album, null=True, verbose_name='专辑', on_delete=models.CASCADE)
     duration = models.CharField(max_length=6, verbose_name='歌曲长度', null=True)
     latestPlayTime = models.DateTimeField(verbose_name='最近播放时间', default=timezone.now, null=True)
-    musicUrl = models.CharField(max_length=200, verbose_name='歌曲链接', null=True)
+
+    # 这里的id是指他在外来接口处的id值，用于获取musicUrl
+    musicId = models.CharField(max_length=10, verbose_name='歌曲链接id', null=True)
+
+    # 因为歌手信息来自外来接口，而且不好判断参与创作的歌手由几人，这里为了方便，直接用charField来代替了
     artist = models.CharField(max_length=50, null=True, verbose_name='歌手')
 
     def __str__(self):

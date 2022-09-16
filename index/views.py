@@ -307,17 +307,17 @@ def set_album_get_state(request):
 
 
 @require_http_methods(["GET"])
-def update_track_duration(request):
+def update_track(request):
     response = {}
     try:
         track_name = request.GET.get('trackName')
         duration = request.GET.get('duration')
         artist = request.GET.get('artist')
-        music_url = request.GET.get('musicUrl')
+        music_id = request.GET.get('musicId')
         track = Track.objects.get(trackName=track_name)
         track.duration = duration
         track.artist = artist
-        track.musicUrl = music_url
+        track.musicId = music_id
         track.save()
         response['msg'] = 'success'
         response['err_num'] = 0
@@ -335,9 +335,9 @@ def update_track_music_url(request):
     response = {}
     try:
         track_name = request.GET.get('trackName')
-        music_url = request.GET.get('musicUrl')
+        music_url = request.GET.get('musicId')
         track = Track.objects.get(trackName=track_name)
-        track.musicUrl = music_url
+        track.musicId = music_url
         track.save()
         response['msg'] = 'success'
         response['err_num'] = 0
@@ -402,7 +402,7 @@ def get_tracks(request):
                 time = timezone.now().strftime("%Y-%m-%d %H:%M")
             my_list.append({'name': t.trackName, 'artists': t.artist,
                             'duration': t.duration, 'lastPlayTime': time,
-                            'musicUrl': t.musicUrl})
+                            'musicId': t.musicId})
         response['result'] = my_list
         response['msg'] = 'success'
         response['err_num'] = 0

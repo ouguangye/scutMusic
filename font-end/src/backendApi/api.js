@@ -112,8 +112,8 @@ export function replyComment(param) {
   return __requestApi(1, 'replyCommit/', param)
 }
 
-export function updateTrackDuration(param) {
-  return __requestApi(1, 'updateTrackDuration/', param)
+export function updateTrack(param) {
+  return __requestApi(1, 'updateTrack/', param)
 }
 
 export function updateTrackLastPlayTime(param) {

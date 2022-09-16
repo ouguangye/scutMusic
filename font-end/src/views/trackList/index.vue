@@ -79,8 +79,8 @@ import {
   getAlbumTracks,
   getAnAlbumInfo,
   getMusicUrl,
-  getTrackLastPlayTime, getTracksInfo, isAlbumGetInfo, setAlbumGetState,
-  updateTrackDuration, updateTrackLastPlayTime
+  getTrackLastPlayTime, getTracksInfo, isAlbumGetInfo, setAlbumGetState, updateTrack,
+  updateTrackLastPlayTime
 } from '@/backendApi/api'
 export default {
   name: 'TrackList',
@@ -110,28 +110,41 @@ export default {
     }
   },
   async mounted() {
+    // 获取专辑信息
     await this.attainAlbumInfo()
     const res = await isAlbumGetInfo({ 'albumId': this.$route.params.id })
+    // 从外来接口或者本地数据库获取专辑内歌曲信息
     if (!res.data.result) {
       await this.getNetWork()
     } else {
       await this.getTracks()
     }
+    // 获取专辑歌曲url列表
+    if (this.tracks.length !== 0) {
+      await this.getMusicList()
+    } else {
+      this.$message.error('接口获取歌曲列表为空')
+    }
   },
   methods: {
+    // 打开简介
     openDetailDialog() {
       this.$alert(this.albumInfo.desc, '专辑简介详情', { customClass: 'alertBox' })
     },
-    async getNetWork() {
-      await this.getTrackFromNetwork()
-      await this.updateTrackDuration()
-      await this.getTrackLastPlayTimeFunction()
-    },
+
+    // 获取专辑信息
     async attainAlbumInfo() {
-      // console.log('id: ' + this.$route.params.id)
       const res = await getAnAlbumInfo({ 'albumId': this.$route.params.id })
       this.albumInfo = res.data.result
     },
+
+    async getNetWork() {
+      await this.getTrackFromNetwork()
+      await this.updateTrack()
+      await this.getTrackLastPlayTimeFunction()
+    },
+
+    // 根据专辑名字来请求专辑内歌曲的信息
     async getTrackFromNetwork() {
       const track_list = this.albumInfo.dynamicTags
       let length = track_list.length
@@ -166,38 +179,41 @@ export default {
         await setAlbumGetState({ 'albumId': this.$route.params.id })
       }
     },
-    async updateTrackDuration() {
-      const my_list = []
+
+    // 将网易云上面的歌曲信息更新到数据库上
+    async updateTrack() {
       for (const t of this.tracks) {
-        const res = await getMusicUrl(t.id)
-        const url = res.data.data[0].url
-        // const url = 'https://music.163.com/song/media/outer/url?id=' + t.id + '.mp3'
-        my_list.push(url)
-        // await updateTrackMusicUrl({ 'trackName': t.name, 'musicUrl': url })
-        await updateTrackDuration({ 'trackName': t.name, 'duration': t.duration, 'artist': t.artists, 'musicUrl': url })
+        await updateTrack({ 'trackName': t.name, 'duration': t.duration, 'artist': t.artists, 'musicId': t.id })
       }
-      this.musicList = my_list
     },
+
+    // 获取歌曲最新播放时间
     async getTrackLastPlayTimeFunction() {
       for (const t of this.tracks) {
         const res = await getTrackLastPlayTime({ 'trackName': t.name })
         t.lastPlayTime = res.data.result
       }
     },
+
+    // 如果数据库已经缓存到歌曲信息，那么直接获取tracks的数据，不需要再请求网易云接口了
     async getTracks() {
       const res = await getTracksInfo({ 'albumId': this.$route.params.id })
-      const my_list = []
       if (res.data.msg === 'success') {
         this.tracks = res.data.result
-        // console.dir(this.tracks)
-        for (const t of this.tracks) {
-          // console.log(t)
-          my_list.push(t.musicUrl)
-        }
-        this.musicList = my_list
       } else {
         this.$message.error(res.data.msg)
       }
+    },
+
+    // 根据歌曲id获取整个播放列表的url
+    async getMusicList() {
+      const my_list = []
+      for (const t of this.tracks) {
+        const res = await getMusicUrl(t.id)
+        const url = res.data.data[0].url
+        my_list.push(url)
+      }
+      this.musicList = my_list
     },
     async playMusic(id, outsideClick) {
       if (outsideClick) this.isAllPlay = false

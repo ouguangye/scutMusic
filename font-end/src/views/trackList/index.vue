@@ -87,7 +87,7 @@ export default {
   components: { ArticleComment },
   data() {
     return {
-      musicList: [], // 音乐链接列表
+      // musicList: [], // 音乐链接列表
       musicUrl: '', // 当前选择播放的音乐链接
       musicIndex: 0, // 全部播放时候对应播放到的index
       isAllPlay: false, // 是否全部播放
@@ -120,11 +120,11 @@ export default {
       await this.getTracks()
     }
     // 获取专辑歌曲url列表
-    if (this.tracks.length !== 0) {
-      await this.getMusicList()
-    } else {
-      this.$message.error('接口获取歌曲列表为空')
-    }
+    // if (this.tracks.length !== 0) {
+    //   await this.getMusicList()
+    // } else {
+    //   this.$message.error('接口获取歌曲列表为空')
+    // }
   },
   methods: {
     // 打开简介
@@ -215,17 +215,21 @@ export default {
       }
       this.musicList = my_list
     },
+
     async playMusic(id, outsideClick) {
       if (outsideClick) this.isAllPlay = false
-      this.musicUrl = this.musicList[id]
-      const name = this.tracks[id].name
-      await updateTrackLastPlayTime({ 'trackName': name })
+      const t = this.tracks[id]
+      const res = await getMusicUrl(t.id)
+      this.musicUrl = res.data.data[0].url
+      await updateTrackLastPlayTime({ 'trackName': t.name })
     },
+
     playAllMusic() {
       this.isAllPlay = true
       this.musicIndex = 0
       this.playMusic(0, false)
     },
+
     overAudio() {
       // console.log('over!!!')
       if (!this.isAllPlay) return

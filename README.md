@@ -10,7 +10,8 @@ python环境 3.7 (python版本其实倒是问题不大)
 所需python包 
 - django 3.2.15  
 - django-simpleui
-
+- django-cors-headers
+- djangorestframework
 ## 运行
 终端输入 python manager.py runserver 
 然后打开网址 http://127.0.0.1:8000/ 即可

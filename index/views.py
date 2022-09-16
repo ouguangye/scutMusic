@@ -19,6 +19,7 @@ def login(request):
         username = request.GET.get('username')
         password = request.GET.get('password')
         print(username, password)
+
         user = UserInfo.objects.filter(username=username, password=password)
         if not user:
             response['msg'] = 'Account and password are incorrect.'
@@ -63,6 +64,13 @@ def register(request):
     response = {}
     try:
         username = request.GET.get('username')
+
+        user = UserInfo.objects.filter(username=username)
+        if user:
+            response['msg'] = '该用户名已经被注册过了！！！ 请更换用户名'
+            response['err_num'] = 2
+            return JsonResponse(response)
+
         password = request.GET.get('password')
         email = request.GET.get('email')
         avatar_image = request.GET.get('avatarImage')
@@ -132,7 +140,7 @@ def upload_album(request):
         response['err_num'] = 0
     except Exception as e:
         response['msg'] = str(e)
-        response['err_num'] = 0
+        response['err_num'] = 1
 
     return JsonResponse(response)
 

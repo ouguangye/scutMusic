@@ -235,7 +235,7 @@ export default {
       if (!this.isAllPlay) return
       this.musicIndex += 1
       // 这里设定为循环播放模式
-      if (this.musicIndex >= this.musicList.length) {
+      if (this.musicIndex >= this.tracks.length) {
         // this.isAllPlay = false
         this.musicIndex = 0
         this.playMusic(this.musicIndex, false)

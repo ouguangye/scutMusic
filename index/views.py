@@ -343,9 +343,9 @@ def update_track_music_url(request):
     response = {}
     try:
         track_name = request.GET.get('trackName')
-        music_url = request.GET.get('musicId')
+        music_id = request.GET.get('musicId')
         track = Track.objects.get(trackName=track_name)
-        track.musicId = music_url
+        track.musicId = music_id
         track.save()
         response['msg'] = 'success'
         response['err_num'] = 0
@@ -410,7 +410,7 @@ def get_tracks(request):
                 time = timezone.now().strftime("%Y-%m-%d %H:%M")
             my_list.append({'name': t.trackName, 'artists': t.artist,
                             'duration': t.duration, 'lastPlayTime': time,
-                            'musicId': t.musicId})
+                            'id': t.musicId})
         response['result'] = my_list
         response['msg'] = 'success'
         response['err_num'] = 0

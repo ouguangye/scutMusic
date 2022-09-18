@@ -136,13 +136,14 @@ export function getTracksInfo(param) {
 
 export function getAlbumTracks(keyword) {
   return axios({
-    url: 'https://autumnfish.cn/search',
+    // url: 'https://autumnfish.cn/search',
+    url: 'http://140.82.50.156:3000/search',
     method: 'get',
     params: {
       keywords: keyword,
       type: 1,
       // 获取的数据量
-      limit: 15
+      limit: 30
     }
   }).then(res => {
     const songList = res.data.result.songs

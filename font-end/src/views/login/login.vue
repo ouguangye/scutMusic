@@ -21,48 +21,57 @@
         <h3 class="title">欢迎使用华工静听</h3>
       </div>
 
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
+      <template v-if="value === '1'">
+        <el-form-item prop="username">
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input
+            ref="username"
+            v-model="loginForm.username"
+            placeholder="Username"
+            name="username"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </el-form-item>
 
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="Password"
+            name="password"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <el-button type="text" style="margin-right:20px;" @click="JumpTo(2)">忘记密码</el-button>
-        <el-button type="text" @click="JumpTo(1)">还没注册？</el-button>
+        <div class="tips">
+          <el-button type="text" style="margin-right:20px;" @click="JumpTo(2)">忘记密码</el-button>
+          <el-button type="text" @click="JumpTo(1)">还没注册？</el-button>
+        </div>
+      </template>
+      <div v-else style="margin: 30px 120px;">
+        <el-button type="primary" style="width: 240px;height: 60px" @click="JumpToAdminForAlbum">
+          跳转到管理员-专辑管理页面 <i class="el-icon-position" style="font-size: 20px"></i>
+        </el-button>
+        <el-button type="primary" style="margin: 30px 0;width: 240px;height: 60px" @click="JumpToAdmin">
+          跳转到管理员-后台管理页面 <i class="el-icon-position" style="font-size: 20px"></i>
+        </el-button>
       </div>
-
     </el-form>
   </div>
 </template>
@@ -90,6 +99,7 @@ export default {
       }
     }
     return {
+      role: 1, // 0表示普通成员， 1表示管理员
       loginForm: {
         username: '',
         password: ''
@@ -136,17 +146,17 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          if (this.value === '2') {
-            if (this.loginForm.username === 'admin' && this.loginForm.password === 'admin') {
-              window.open('/admin/index/album/', '_blank')
-              this.loginForm.username = ''
-              this.loginForm.password = ''
-              this.$message('登录成功，现在打开管理页面')
-            } else {
-              this.$message.error('账户或者密码错误')
-            }
-            return
-          }
+          // if (this.value === '2') {
+          //   if (this.loginForm.username === 'admin' && this.loginForm.password === 'admin') {
+          //     window.open('/admin/index/album/', '_blank')
+          //     this.loginForm.username = ''
+          //     this.loginForm.password = ''
+          //     this.$message('登录成功，现在打开管理页面')
+          //   } else {
+          //     this.$message.error('账户或者密码错误')
+          //   }
+          //   return
+          // }
           this.loading = true
           const res = await userLogin({ 'username': this.loginForm.username,
             'password': this.loginForm.password })
@@ -172,6 +182,16 @@ export default {
     },
     JumpTo(id) {
       this.$emit('listenEvent', id)
+    },
+    JumpToOtherPage(url, msg) {
+      window.open(url, '_blank')
+      this.$message(msg)
+    },
+    JumpToAdminForAlbum() {
+      this.JumpToOtherPage('/admin/index/album/', '登录成功，现在打开管理专辑页面')
+    },
+    JumpToAdmin() {
+      this.JumpToOtherPage('/admin', '登录成功，现在打开管理后台页面')
     }
   }
 }

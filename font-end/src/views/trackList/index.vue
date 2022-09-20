@@ -119,12 +119,6 @@ export default {
     } else {
       await this.getTracks()
     }
-    // 获取专辑歌曲url列表
-    // if (this.tracks.length !== 0) {
-    //   await this.getMusicList()
-    // } else {
-    //   this.$message.error('接口获取歌曲列表为空')
-    // }
   },
   methods: {
     // 打开简介
@@ -152,6 +146,7 @@ export default {
       if (res.length === 0) {
         return
       }
+      console.log('getMusicList: ', res)
       const my_list = []
       for (const r of res) {
         const index = track_list.indexOf(r.name)
@@ -175,6 +170,7 @@ export default {
         }
       }
       this.tracks = my_list
+      console.log('myTrackList: ', this.tracks)
       if (this.tracks.length !== 0) {
         await setAlbumGetState({ 'albumId': this.$route.params.id })
       }
@@ -203,17 +199,6 @@ export default {
       } else {
         this.$message.error(res.data.msg)
       }
-    },
-
-    // 根据歌曲id获取整个播放列表的url
-    async getMusicList() {
-      const my_list = []
-      for (const t of this.tracks) {
-        const res = await getMusicUrl(t.id)
-        const url = res.data.data[0].url
-        my_list.push(url)
-      }
-      this.musicList = my_list
     },
 
     async playMusic(id, outsideClick) {

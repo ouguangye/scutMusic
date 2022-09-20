@@ -20,59 +20,58 @@
         <img src="@/assets/log_image/music.png" alt="">
         <h3 class="title">欢迎使用华工静听</h3>
       </div>
-      <transition name="plus-icon">
-        <div v-if="value === '1'">
-          <el-form-item prop="username">
-            <span class="svg-container">
-              <svg-icon icon-class="user" />
-            </span>
-            <el-input
-              ref="username"
-              v-model="loginForm.username"
-              placeholder="Username"
-              name="username"
-              type="text"
-              tabindex="1"
-              auto-complete="on"
-            />
-          </el-form-item>
 
-          <el-form-item prop="password">
-            <span class="svg-container">
-              <svg-icon icon-class="password" />
-            </span>
-            <el-input
-              :key="passwordType"
-              ref="password"
-              v-model="loginForm.password"
-              :type="passwordType"
-              placeholder="Password"
-              name="password"
-              tabindex="2"
-              auto-complete="on"
-              @keyup.enter.native="handleLogin"
-            />
-            <span class="show-pwd" @click="showPwd">
-              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-            </span>
-          </el-form-item>
+      <template v-if="value === '1'">
+        <el-form-item prop="username">
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input
+            ref="username"
+            v-model="loginForm.username"
+            placeholder="Username"
+            name="username"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </el-form-item>
 
-          <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="Password"
+            name="password"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
 
-          <div class="tips">
-            <el-button type="text" style="margin-right:20px;" @click="JumpTo(2)">忘记密码</el-button>
-            <el-button type="text" @click="JumpTo(1)">还没注册？</el-button>
-          </div>
+        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+
+        <div class="tips">
+          <el-button type="text" style="margin-right:20px;" @click="JumpTo(2)">忘记密码</el-button>
+          <el-button type="text" @click="JumpTo(1)">还没注册？</el-button>
         </div>
-        <div v-else style="margin: 30px 120px;">
-          <el-button type="primary" style="width: 240px;height: 60px" @click="JumpToAdminForAlbum">
-            跳转到管理员-专辑管理页面 <i class="el-icon-position" style="font-size: 20px" />
-          </el-button>
-          <el-button type="primary" style="margin: 30px 0;width: 240px;height: 60px" @click="JumpToAdmin">
-            跳转到管理员-后台管理页面 <i class="el-icon-position" style="font-size: 20px" />
-          </el-button>
-        </div>
-      </transition>
+      </template>
+      <div v-else style="margin: 30px 120px;">
+        <el-button type="primary" style="width: 240px;height: 60px" @click="JumpToAdminForAlbum">
+          跳转到管理员-专辑管理页面 <i class="el-icon-position" style="font-size: 20px"></i>
+        </el-button>
+        <el-button type="primary" style="margin: 30px 0;width: 240px;height: 60px" @click="JumpToAdmin">
+          跳转到管理员-后台管理页面 <i class="el-icon-position" style="font-size: 20px"></i>
+        </el-button>
+      </div>
     </el-form>
   </div>
 </template>
@@ -343,19 +342,5 @@ $light_gray:#eee;
     user-select: none;
   }
 }
-
-//切换的动画效果
-  .plus-icon-enter-active{
-    transition: opacity .5s;
-  }
-  .plus-icon-enter{
-    opacity: 0;
-  }
-  .plus-icon-leave-active{
-    transition: opacity .5s;
-  }
-  .plus-icon-leave-to{
-    opacity: 0;
-  }
 </style>
 

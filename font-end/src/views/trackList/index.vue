@@ -146,26 +146,23 @@ export default {
       if (res.length === 0) {
         return
       }
+      console.log('getMusicList: ', res)
       const my_list = []
       for (const r of res) {
-        // console.log('getMusicList: ', r)
         const index = track_list.indexOf(r.name)
-
-        // 如果这首歌存在与用户所填的歌曲名匹配
         if (index !== (-1)) {
           let artist_string = ''
           let flag = false // 判断是否包含专辑的作者
-          for (const a of r.artist) {
+          for (const a of r.artists) {
             artist_string += (a.name + ' ')
             if (this.albumInfo.artist !== '群星') {
               if (a.name === this.albumInfo.artist) flag = true
             }
           }
-          // r.artists = artist_string
+          r.artists = artist_string
           r['lastPlayTime'] = ''
           if ((this.albumInfo.artist === '群星') || flag) {
-            my_list.push({ 'artists': artist_string, 'lastPlayTime': '', 'duration': r.duration,
-              'name': r.name, 'id': r.id })
+            my_list.push(r)
             length -= 1
             track_list.splice(index, 1)
           }

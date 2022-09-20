@@ -63,21 +63,21 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/myAlbum',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
+    redirect: '/myAlbum/collection',
+    name: 'myAlbum',
     meta: { title: '我的专辑', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
+        path: 'collection',
+        name: 'Collection',
         component: () => import('@/views/table/index'),
         meta: { title: '已收藏专辑列表', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
+        path: 'uploadAlbum',
+        name: 'UploadAlbum',
         component: () => import('@/views/tree/index'),
         meta: { title: '上传专辑列表', icon: 'tree' }
       }
@@ -108,7 +108,6 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router

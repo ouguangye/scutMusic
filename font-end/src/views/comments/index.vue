@@ -117,7 +117,7 @@ export default {
       item.like += item.isClickLike ? (-1) : 1
       item.isClickLike = !item.isClickLike
       if (isComment) await updateCommentLike({ 'commentId': item.commentId, 'like': item.like })
-      else await updateReplyLike({ 'commentId': item.commentId, 'like': item.like })
+      else await updateReplyLike({ 'replyId': item.replyId, 'like': item.like })
     },
     showReplyBtn() {
       this.btnShow = true

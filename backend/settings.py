@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "zh-Hans"
+LANGUAGE_CODE = "zh-hans"
 
 DATE_FORMAT = 'Y-m-d'
 
@@ -137,3 +137,8 @@ EMAIL_POST = 25
 EMAIL_HOST_USER = '3250679635@qq.com'
 EMAIL_HOST_PASSWORD="aqvlncolchxudada"
 EMAIL_USE_TLS = False
+
+# simple ui 配置页面
+SIMPLEUI_LOGO = 'https://s1.ax1x.com/2022/09/20/xC1QiV.png'
+SIMPLEUI_HOME_INFO = False
+SIMPLEUI_ANALYSIS = False

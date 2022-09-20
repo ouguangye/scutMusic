@@ -9,6 +9,10 @@ class UserInfo(models.Model):
     avatarImage = models.CharField(max_length=100, verbose_name='头像图片链接', null=True)
     role = models.CharField(verbose_name='身份', max_length=10, choices=(('0', 'user'), ('1', 'manager')), default='0')
 
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "User"
+
     def __str__(self):
         return '%s: %s' % ('user' if self.role == '0' else 'manager', self.username)
 

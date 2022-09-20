@@ -1,4 +1,5 @@
 import random
+from django.core.paginator import Paginator
 from django.db.models import Max
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -195,25 +196,64 @@ def update_album(request):
 def get_all_album(request):
     response = {}
     try:
-        album_list = Album.objects.filter(uploadState='2')
+        # 从前端的request获得数据
         username = request.GET.get('username')
+        num_p = request.GET.get('page', 1)
+        album_name = request.GET.get('albumName', None)
+        artist_name = request.GET.get('artist', None)
+
+        # 筛选
+        album_list = Album.objects.filter(uploadState='2')
+
+        if album_name:
+            album_list = album_list.filter(albumName__icontains=album_name)
+
+        if artist_name:
+            album_list = album_list.filter(artist__artistName__icontains=artist_name)
+
+        # 判断是否被该用户收藏
         user_object = UserInfo.objects.get(username=username)
         collection = Collection.objects.get_or_create(user=user_object)[0]
-        # collection = user_object.collection
-        if len(album_list) != 0:
+
+        # 分页
+        my_paginator = Paginator(album_list, 9)
+        page_list = my_paginator.page(num_p)
+        # print(page_list)
+
+        # 对发出的数据进行处理
+        if len(page_list) != 0:
             response['msg'] = 'success'
             response['err_num'] = 0
             res_list = []
-            for albumItem in list(album_list):
+            for albumItem in list(page_list):
                 is_collected = collection.album.filter(albumId=albumItem.albumId).exists()
                 res_list.append({'albumId': albumItem.albumId, 'albumName': albumItem.albumName,
                                  'albumImage': albumItem.albumImage, 'artist': albumItem.artist.artistName,
                                  'isCollected': is_collected})
-            response['result'] = res_list
+            response['result'] = {'list': res_list, 'pages': my_paginator.num_pages}
         else:
             response['msg'] = 'list is null'
             response['err_num'] = 0
         # print("get_all_album: ", response["result"])
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+
+    return JsonResponse(response)
+
+
+@require_http_methods(["GET"])
+def get_all_album_name(request):
+    response = {}
+    try:
+        album_list = Album.objects.all()
+        my_list = []
+        for album in album_list:
+            my_list.append(album.albumName)
+        response['result'] = my_list
+        response['msg'] = 'success'
+        response['err_num'] = 0
     except Exception as e:
         response['msg'] = str(e)
         response['err_num'] = 1
@@ -613,6 +653,29 @@ def reply_comment(request):
 
     return JsonResponse(response)
 
+
+'''
+    获取所有作者名字
+'''
+
+
+@require_http_methods(["GET"])
+def get_all_artist(request):
+    response = {}
+    try:
+        artist_list = Artist.objects.all()
+        my_list = []
+        for artist in artist_list:
+            my_list.append(artist.artistName)
+        response['result'] = my_list
+        response['msg'] = 'success'
+        response['err_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+
+    return JsonResponse(response)
 
 '''
     发送邮箱验证码

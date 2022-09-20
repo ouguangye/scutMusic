@@ -11,6 +11,7 @@ urlpatterns = [
     # 专辑相关url
     path('uploadAlbum/', views.upload_album),
     path('getAllAlbum/', views.get_all_album),
+    path('getAllAlbumName/', views.get_all_album_name),
     path('getUploadAlbum/', views.get_upload_album),
     path('updateAlbum/', views.update_album),
     path('getAnAlbum/', views.get_an_album),
@@ -32,4 +33,6 @@ urlpatterns = [
     path('getTrackLastPlayTime/', views.get_track_last_play_time),
     path('updateTrackLastPlayTime/', views.update_track_last_play_time),
     path('updateTrackMusicUrl/', views.update_track_music_url),
+    # 歌手相关url
+    path('getAllArtist/', views.get_all_artist),
 ]

@@ -27,6 +27,7 @@ function __postFormApi(url, param) {
   })
 }
 
+// 用户注册、登录等api
 export function userLogin(param) {
   return __requestApi(0, 'login/', param)
 }
@@ -47,6 +48,8 @@ export function updateUserPassword(param) {
   return __requestApi(0, 'updatePassword/', param)
 }
 
+// 专辑相关的api
+
 export function uploadAlbum(album) {
   return __postFormApi('uploadAlbum/', album)
 }
@@ -59,16 +62,8 @@ export function getAllAlbum(param) {
   return __requestApi(1, 'getAllAlbum/', param)
 }
 
-export function addCollection(param) {
-  return __requestApi(1, 'addCollection/', param)
-}
-
-export function delCollection(param) {
-  return __requestApi(1, 'delCollection/', param)
-}
-
-export function getCollection(param) {
-  return __requestApi(1, 'getCollection/', param)
+export function getAllAlbumName(param) {
+  return __requestApi(1, 'getAllAlbumName/', param)
 }
 
 export function getUploadAlbum(param) {
@@ -86,6 +81,22 @@ export function isAlbumGetInfo(param) {
 export function setAlbumGetState(param) {
   return __requestApi(1, 'setAlbumGetState/', param)
 }
+
+// 收藏相关的api
+
+export function addCollection(param) {
+  return __requestApi(1, 'addCollection/', param)
+}
+
+export function delCollection(param) {
+  return __requestApi(1, 'delCollection/', param)
+}
+
+export function getCollection(param) {
+  return __requestApi(1, 'getCollection/', param)
+}
+
+// 评论api
 
 export function sendCommentRequest(param) {
   return __requestApi(1, 'sendComment/', param)
@@ -107,6 +118,8 @@ export function replyComment(param) {
   return __requestApi(1, 'replyCommit/', param)
 }
 
+// 歌曲api
+
 export function updateTrack(param) {
   return __requestApi(1, 'updateTrack/', param)
 }
@@ -119,15 +132,16 @@ export function getTrackLastPlayTime(param) {
   return __requestApi(1, 'getTrackLastPlayTime/', param)
 }
 
-export function updateTrackMusicUrl(param) {
-  return __requestApi(1, 'updateTrackMusicUrl/', param)
-}
-
 export function getTracksInfo(param) {
   return __requestApi(1, 'getTracks/', param)
 }
 
-// TODO 这里的接口因为访问次数过多，然后经常获取失败，这里建议多尝试几种接口形式
+// 获得所有歌手的名字
+export function getAllArtist(param) {
+  return __requestApi(1, 'getAllArtist/', param)
+}
+
+// 外部api
 
 export function getAlbumTracks(keyword) {
   return axios({

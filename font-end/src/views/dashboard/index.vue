@@ -22,8 +22,18 @@
         />
       </el-select>
     </div>
-    <div v-if="filterList.length !== 0" class="list">
-      <AlbumCardVue v-for="item in filterList" :key="item.userId" :info="item" />
+    <div v-if="album_list.length !== 0" style="display: flex;flex-direction: column">
+      <div class="list">
+        <AlbumCardVue v-for="item in album_list" :key="item.userId" :info="item" />
+      </div>
+      <el-pagination
+        v-if="pages > 1"
+        background
+        layout="prev, pager, next"
+        :total="pages*10"
+        style="margin: 40px auto; display: block"
+        @current-change="changePage"
+      />
     </div>
     <el-empty v-else description="暂无结果" :image-size="270" style="margin-top: 40px" />
   </div>
@@ -32,12 +42,16 @@
 <script>
 
 import AlbumCardVue from '@/views/dashboard/AlbumCard'
-import { getAllAlbum } from '@/backendApi/api'
+import { getAllAlbum, getAllAlbumName, getAllArtist } from '@/backendApi/api'
 export default {
   name: 'Dashboard',
   components: { AlbumCardVue },
   data() {
     return {
+      album_list: [],
+      album_name_list: [],
+      artist_list: [],
+      pages: 1,
       options: [{
         value: 1,
         label: '专辑'
@@ -46,28 +60,57 @@ export default {
         label: '作者'
       }],
       searchOption: 1,
-      album_list: [],
       searchWord: ''
     }
   },
   computed: {
-    filterList: function() {
-      return this.getFilter(this.album_list, this.searchWord)
+    choose_list: function() {
+      return this.searchOption === 1 ? this.album_name_list : this.artist_list
+    }
+  },
+  watch: {
+    searchWord(value) {
+      if (this.getFilter(this.choose_list, value).length === 0) return
+      let param = {}
+      if (value || value !== '') {
+        if (this.searchOption === 1) {
+          param = { 'albumName': value }
+        } else {
+          param = { 'artist': value }
+        }
+      }
+      this.getAlbumResult(param)
     }
   },
   async mounted() {
-    const res = await getAllAlbum({ 'username': this.$store.getters.name })
-    this.album_list = res.data.result
+    await this.getAlbumResult()
+    await this.getAlbumNameList()
+    await this.getArtistNameList()
   },
   methods: {
+    async getAlbumResult(param) {
+      const res = await getAllAlbum({ 'username': this.$store.getters.name, ...param })
+      this.album_list = res.data.result.list
+      this.pages = res.data.result.pages
+    },
+    async getAlbumNameList() {
+      const res = await getAllAlbumName()
+      this.album_name_list = res.data.result
+    },
+    async getArtistNameList() {
+      const res = await getAllArtist()
+      this.artist_list = res.data.result
+    },
+    changePage(page) {
+      this.getAlbumResult({ 'page': page })
+    },
+
     querySearch(queryString, cb) {
-      const results = this.getFilter(this.album_list, queryString)
-      const mySet = new Set()
+      const res = this.getFilter(this.choose_list, queryString)
+      // console.log(res)
       const my_list = []
-      for (const r of results) {
-        const value = this.searchOption === 1 ? r.albumName : r.artist
-        if (!mySet.has(value)) my_list.push({ 'value': value })
-        mySet.add(value)
+      for (const r of res) {
+        my_list.push({ 'value': r })
       }
       cb(my_list)
     },
@@ -77,12 +120,13 @@ export default {
     },
 
     createFilter(queryString) {
-      return (album) => {
+      return (name) => {
+        // console.log(name)
         const queryString_low = queryString.toLowerCase()
-        return this.searchOption === 1 ? (album.albumName.toLowerCase().indexOf(queryString_low) === 0)
-          : (album.artist.toLowerCase().indexOf(queryString_low) === 0)
+        return name.toLowerCase().indexOf(queryString_low) !== -1
       }
     },
+
     handleSelect(item) {
       this.selectSearchWord = item.value
     }

@@ -536,7 +536,7 @@ def get_comments(request):
             for reply in reply_list:
                 my_reply_list.append({'from': reply.fromUser.username, 'time': reply.time.strftime("%Y-%m-%d %H:%M"),
                                       'to': reply.toUser.username, 'comment': reply.replyComment, 'like': reply.like,
-                                      'fromHeadImg': reply.fromUser.avatarImage})
+                                      'fromHeadImg': reply.fromUser.avatarImage, 'replyId': reply.replyId})
             mylist.append({'name': comment.user.username, 'headImg': comment.user.avatarImage,
                            'comment': comment.comment, 'reply': my_reply_list,
                            'time': comment.time.strftime("%Y-%m-%d %H:%M"),
@@ -561,6 +561,25 @@ def update_comment_like(request):
         my_comment = Comment.objects.get(commentId=comment_id)
         my_comment.like = num
         my_comment.save()
+        response['msg'] = 'success'
+        response['err_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['err_num'] = 1
+        print(str(e))
+
+    return JsonResponse(response)
+
+
+@require_http_methods(["GET"])
+def update_reply_like(request):
+    response = {}
+    try:
+        reply_id = request.GET.get('replyId')
+        num = int(request.GET.get('like'))
+        my_reply = Reply.objects.get(replyId=reply_id)
+        my_reply.like = num
+        my_reply.save()
         response['msg'] = 'success'
         response['err_num'] = 0
     except Exception as e:

@@ -30,12 +30,13 @@
           </p>
         </div>
         <div class="icon-btn">
-          <div @click="like(i)">
+          <div @click="like(item, true)">
             <svg-icon icon-class="like" class="like_icon" />
             <span>{{ item.like }}</span>
           </div>
           <span @click="showReplyInput(i, item.userId)">{{ item.inputShow ? '取消回复' : '回复' }}</span>
         </div>
+        <!--回复评论部分-->
         <div class="reply-box">
           <div v-for="(reply,j) in item.reply" :key="j" class="author-title">
             <el-avatar class="header-img" :size="40" :src="reply.fromHeadImg" />
@@ -50,9 +51,9 @@
               </p>
             </div>
             <div class="icon-btn">
-              <div @click="like(i)">
+              <div @click="like(reply, false)">
                 <svg-icon icon-class="like" class="like_icon" />
-                <span>{{ item.like }}</span>
+                <span>{{ reply.like }}</span>
               </div>
               <span @click="showReplyInput(i,item.userId)">回复</span>
             </div>
@@ -80,7 +81,7 @@
 </template>
 
 <script>
-import { getComments, replyComment, sendCommentRequest, updateCommentLike } from '@/backendApi/api'
+import { getComments, replyComment, sendCommentRequest, updateCommentLike, updateReplyLike } from '@/backendApi/api'
 
 export default {
   name: 'ArticleComment',
@@ -112,11 +113,11 @@ export default {
         this.comments = my_list
       }
     },
-    async like(i) {
-      const item = this.comments[i]
+    async like(item, isComment) {
       item.like += item.isClickLike ? (-1) : 1
       item.isClickLike = !item.isClickLike
-      await updateCommentLike({ 'commentId': item.commentId, 'like': item.like })
+      if (isComment) await updateCommentLike({ 'commentId': item.commentId, 'like': item.like })
+      else await updateReplyLike({ 'commentId': item.commentId, 'like': item.like })
     },
     showReplyBtn() {
       this.btnShow = true

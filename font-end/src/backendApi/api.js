@@ -47,18 +47,9 @@ export function updateUserPassword(param) {
   return __requestApi(0, 'updatePassword/', param)
 }
 
-// TODO  由于参数太长，这里的接口需要修改为form上传形式
-// export function uploadAlbum(album) {
-//   return __requestApi(0, 'uploadAlbum/', album)
-// }
-
 export function uploadAlbum(album) {
   return __postFormApi('uploadAlbum/', album)
 }
-
-// export function updateAlbum(param) {
-//   return __requestApi(0, 'updateAlbum/', param)
-// }
 
 export function updateAlbum(param) {
   return __postFormApi('updateAlbum/', param)
@@ -106,6 +97,10 @@ export function getComments(param) {
 
 export function updateCommentLike(param) {
   return __requestApi(1, 'updateCommentLike/', param)
+}
+
+export function updateReplyLike(param) {
+  return __requestApi(1, 'updateReplyLike/', param)
 }
 
 export function replyComment(param) {

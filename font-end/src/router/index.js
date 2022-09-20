@@ -72,13 +72,13 @@ export const constantRoutes = [
       {
         path: 'collection',
         name: 'Collection',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/collectAlbum/index'),
         meta: { title: '已收藏专辑列表', icon: 'table' }
       },
       {
         path: 'uploadAlbum',
         name: 'UploadAlbum',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/upLoadAlbum/index'),
         meta: { title: '上传专辑列表', icon: 'tree' }
       }
     ]

@@ -136,7 +136,6 @@ export function getTracksInfo(param) {
 
 export function getAlbumTracks(keyword) {
   return axios({
-    // url: 'https://autumnfish.cn/search',
     url: 'http://140.82.50.156:3000/search',
     method: 'get',
     params: {
@@ -150,15 +149,18 @@ export function getAlbumTracks(keyword) {
     // console.log('before: ', songList)
     // 计算歌曲时间
     for (let i = 0; i < songList.length; i++) {
-      let min = parseInt(songList[i].duration / 1000 / 60)
-      let sec = parseInt((songList[i].duration / 1000) % 60)
+      const dt = songList[i].dt
+      let min = parseInt(dt / 1000 / 60)
+      let sec = parseInt((dt / 1000) % 60)
       if (min < 10) {
         min = '0' + min
       }
       if (sec < 10) {
         sec = '0' + sec
       }
-      songList[i].duration = min + ':' + sec
+      songList[i].dt = min + ':' + sec
+      songList[i] = { 'artist': songList[i].ar, 'track': songList[i].al,
+        'duration': songList[i].dt, 'name': songList[i].name, 'id': songList[i].id }
     }
     // console.log(songList)
     return songList

@@ -141,35 +141,34 @@ export default {
     // 根据专辑名字来请求专辑内歌曲的信息
     async getTrackFromNetwork() {
       const track_list = this.albumInfo.dynamicTags
-      let length = track_list.length
-      const res = await getAlbumTracks(this.albumInfo.name)
-      if (res.length === 0) {
-        return
-      }
+      console.log('track list:', track_list)
+
       const my_list = []
-      for (const r of res) {
-        const index = track_list.indexOf(r.name)
 
-        // 如果这首歌存在与用户所填的歌曲名匹配
-        if (index !== (-1)) {
+      for (const name of track_list) {
+        const res = await getAlbumTracks(name)
+        if (res.length === 0) continue
+        // console.log('res: ', res)
+        for (const r of res) {
+          console.log(r)
+          if (r.name !== name || r.track.name !== this.albumInfo.name) continue
+          console.log('!!!!!!!!!!!!!!!')
+          // 拼凑 歌手名字
           let artist_string = ''
-          let flag = false // 判断是否包含专辑的作者
-          for (const a of r.artist) {
-            artist_string += (a.name + ' ')
-            if (this.albumInfo.artist !== '群星') {
-              if (a.name === this.albumInfo.artist) flag = true
-            }
+          console.log()
+          for (const artist_name of r.artist) {
+            artist_string = artist_string + artist_name + ''
           }
+          console.log('name', artist_string)
+          artist_string = artist_string.substr(0, artist_string.length - 1)
 
-          if ((this.albumInfo.artist === '群星') || flag) {
-            my_list.push({ 'artists': artist_string, 'lastPlayTime': '', 'duration': r.duration,
-              'name': r.name, 'id': r.id })
-            length -= 1
-            track_list.splice(index, 1)
-          }
-          if (length === 0) break
+          my_list.push({ 'artists': artist_string, 'lastPlayTime': '', 'duration': r.duration,
+            'name': r.name, 'id': r.id })
+          console.log('list:', my_list)
+          break
         }
       }
+
       this.tracks = my_list
       console.log('myTrackList: ', this.tracks)
       if (this.tracks.length !== 0) {

@@ -150,17 +150,15 @@ export default {
         if (res.length === 0) continue
         // console.log('res: ', res)
         for (const r of res) {
-          console.log(r)
           if (r.name !== name || r.track.name !== this.albumInfo.name) continue
-          console.log('!!!!!!!!!!!!!!!')
+
           // 拼凑 歌手名字
           let artist_string = ''
-          console.log()
+
           for (const artist_name of r.artist) {
-            artist_string = artist_string + artist_name + ''
+            // console.log('name', artist_name.name)
+            artist_string = artist_string + artist_name.name + ' '
           }
-          console.log('name', artist_string)
-          artist_string = artist_string.substr(0, artist_string.length - 1)
 
           my_list.push({ 'artists': artist_string, 'lastPlayTime': '', 'duration': r.duration,
             'name': r.name, 'id': r.id })

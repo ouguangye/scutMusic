@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div class="play-table">
+    <div class="play-table" v-loading="loading" element-loading-text="拼命加载中歌曲中">
       <p style="font-size:16px;color: #31c27c;">曲目列表</p>
       <el-divider />
       <table class="el-table">
@@ -98,7 +98,8 @@ export default {
         imageUrl: '',
         desc: ''
       },
-      tracks: []
+      tracks: [],
+      loading: true
     }
   },
   watch: {
@@ -172,6 +173,8 @@ export default {
       if (this.tracks.length !== 0) {
         await setAlbumGetState({ 'albumId': this.$route.params.id })
       }
+
+      this.loading = false
     },
 
     // 将网易云上面的歌曲信息更新到数据库上
@@ -197,6 +200,7 @@ export default {
       } else {
         this.$message.error(res.data.msg)
       }
+      this.loading = false
     },
 
     async playMusic(id, outsideClick) {

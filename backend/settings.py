@@ -131,11 +131,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "font-end/dist/static"),
 ]
 
+# TODO 配置自己邮箱信息
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_POST = 25
-EMAIL_HOST_USER = '3250679635@qq.com'
-EMAIL_HOST_PASSWORD="aqvlncolchxudada"
+EMAIL_HOST_USER = 'xxxx@qq.com'
+EMAIL_HOST_PASSWORD="xxxxx"
 EMAIL_USE_TLS = False
 
 # simple ui 配置页面

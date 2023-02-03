@@ -32,6 +32,10 @@ npm 环境 16+ 或者 以下的版本
 
 
 部署 [网易云接口](https://github.com/Binaryify/NeteaseCloudMusicApi) 项目在3000 端口上
+
+## 配置
+配置自己发送消息的邮箱信息
+![image](https://user-images.githubusercontent.com/78332649/212888064-bcbbf548-0869-4705-90a4-0f10403bdc1a.png)
 ## 运行
 运行
 ``` 

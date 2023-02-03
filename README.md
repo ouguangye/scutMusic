@@ -85,3 +85,11 @@ python manager.py runserver
 
 #### 审核、修改 用户上传的专辑
 ![3](https://user-images.githubusercontent.com/78332649/216556931-8f1143be-cf71-40fb-9d99-cfcc523f195f.png)
+
+
+## 参考
+- [基于Vue2、element UI的高仿网易云播放器（PC）](https://github.com/isolcat/vue2-element-music)
+- [Element UI](https://element.eleme.cn/#/zh-CN/component/divider)
+- [Django框架教程](http://c.biancheng.net/django/)
+- [网易云接口](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=neteasecloudmusicapi)
+- [手把手教你配置Django SimpleUI打造美丽后台](https://zhuanlan.zhihu.com/p/372185998)
